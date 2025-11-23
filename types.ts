@@ -134,3 +134,30 @@ export interface Achievement {
   progress?: (stats: GameStats) => number; // 0 to 100 for progress bar
   category: 'SCORE' | 'COMBAT' | 'MASTERY' | 'DEDICATION';
 }
+
+// Telegram Web App Types
+export interface TelegramWebApp {
+  ready: () => void;
+  expand: () => void;
+  close: () => void;
+  colorScheme: 'light' | 'dark';
+  viewportHeight: number;
+  viewportStableHeight: number;
+  isExpanded: boolean;
+  platform: string;
+  BackButton: {
+      isVisible: boolean;
+      onClick: (callback: () => void) => void;
+      offClick: (callback: () => void) => void;
+      show: () => void;
+      hide: () => void;
+  };
+}
+
+declare global {
+  interface Window {
+    Telegram?: {
+      WebApp: TelegramWebApp;
+    };
+  }
+}

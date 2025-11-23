@@ -27,12 +27,29 @@ const App: React.FC = () => {
   const [achievements, setAchievements] = useState<Achievement[]>([]);
   const [toast, setToast] = useState<{title: string, icon: string} | null>(null);
 
-  // 1. Load Data on Mount
+  // 1. Load Data on Mount & Initialize Telegram
   useEffect(() => {
+    // Check for Telegram Environment
+    const tg = window.Telegram?.WebApp;
+    if (tg) {
+      tg.ready();
+      tg.expand();
+      
+      // Auto-sync theme with Telegram settings
+      if (tg.colorScheme) {
+          setTheme(tg.colorScheme);
+      }
+    }
+
     // Load Settings
     const savedSettings = loadSettings();
     setIsMuted(savedSettings.isMuted);
-    setTheme(savedSettings.theme);
+    
+    // Only use saved theme if NOT in Telegram, or if we want persistence to override TG (here we prefer TG sync if available)
+    if (!tg) {
+        setTheme(savedSettings.theme);
+    }
+
     setDifficulty(savedSettings.difficulty);
     setShowTutorial(!savedSettings.hasPlayedTutorial);
     
