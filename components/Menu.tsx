@@ -1,6 +1,7 @@
 
+
 import React, { useState } from 'react';
-import { Play, RotateCcw, Trophy, Gauge, Lock, ChevronLeft, Grid } from 'lucide-react';
+import { Play, RotateCcw, Trophy, Gauge, Lock, ChevronLeft, Grid, Send } from 'lucide-react';
 import { Difficulty, Achievement, GameStats, Theme } from '../types';
 import * as LucideIcons from 'lucide-react';
 import { playSound } from '../utils/sound';
@@ -18,6 +19,7 @@ interface MenuProps {
   stats: GameStats;
   theme: Theme;
   isMuted: boolean;
+  onSendScore?: () => void;
 }
 
 export const Menu: React.FC<MenuProps> = ({ 
@@ -32,9 +34,11 @@ export const Menu: React.FC<MenuProps> = ({
   achievements,
   stats,
   theme,
-  isMuted
+  isMuted,
+  onSendScore
 }) => {
   const [view, setView] = useState<'MAIN' | 'ACHIEVEMENTS'>('MAIN');
+  const isTelegram = !!window.Telegram?.WebApp;
 
   const handleViewChange = (v: 'MAIN' | 'ACHIEVEMENTS') => {
       playSound('ui', isMuted);
@@ -214,6 +218,16 @@ export const Menu: React.FC<MenuProps> = ({
           {isGameOver ? <RotateCcw className="mr-2" /> : <Play className="mr-2" />}
           {isGameOver ? 'Try Again' : 'Start Game'}
         </button>
+        
+        {/* Telegram Submit Score Button */}
+        {isGameOver && isTelegram && onSendScore && (
+             <button
+                onClick={() => { playSound('ui', isMuted); onSendScore(); }}
+                className={`w-full mb-4 py-3 rounded-xl font-bold border transition-colors flex items-center justify-center gap-2 ${theme === 'dark' ? 'border-indigo-500/30 text-indigo-300 hover:bg-indigo-500/10' : 'border-indigo-200 text-indigo-600 hover:bg-indigo-50'}`}
+             >
+                 <Send size={18} /> Submit Score to Chat
+             </button>
+        )}
 
         <div className="flex gap-2 justify-center">
             <div className={`flex-1 flex items-center justify-center space-x-2 py-3 px-6 rounded-xl ${theme === 'dark' ? 'bg-slate-800/50 text-slate-500' : 'bg-slate-100 text-slate-600'}`}>

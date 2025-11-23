@@ -1,3 +1,4 @@
+
 /// <reference lib="dom" />
 
 
@@ -195,6 +196,34 @@ const playTone = (ctx: AudioContext, freq: number, type: OscillatorType, duratio
 };
 
 export const playSound = (type: 'score' | 'gameover' | 'rotate' | 'heavy' | 'pop' | 'whir' | 'shoot' | 'achievement' | 'levelUp' | 'streak' | 'ui', isMuted: boolean) => {
+  // Telegram Haptic Feedback Integration
+  const tg = window.Telegram?.WebApp;
+  
+  if (tg && tg.HapticFeedback) {
+      switch (type) {
+          case 'ui':
+          case 'rotate':
+              tg.HapticFeedback.selectionChanged();
+              break;
+          case 'shoot':
+              tg.HapticFeedback.impactOccurred('light');
+              break;
+          case 'score':
+          case 'pop':
+              tg.HapticFeedback.impactOccurred('medium');
+              break;
+          case 'heavy':
+          case 'streak':
+          case 'levelUp':
+          case 'achievement':
+              tg.HapticFeedback.impactOccurred('heavy');
+              break;
+          case 'gameover':
+              tg.HapticFeedback.notificationOccurred('error');
+              break;
+      }
+  }
+
   if (isMuted) return;
 
   if (!audioCtx) initAudio();

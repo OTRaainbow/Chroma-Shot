@@ -140,17 +140,40 @@ export interface TelegramWebApp {
   ready: () => void;
   expand: () => void;
   close: () => void;
+  sendData: (data: string) => void;
   colorScheme: 'light' | 'dark';
   viewportHeight: number;
   viewportStableHeight: number;
   isExpanded: boolean;
   platform: string;
+  
   BackButton: {
       isVisible: boolean;
       onClick: (callback: () => void) => void;
       offClick: (callback: () => void) => void;
       show: () => void;
       hide: () => void;
+  };
+
+  MainButton: {
+      isVisible: boolean;
+      text: string;
+      color: string;
+      textColor: string;
+      show: () => void;
+      hide: () => void;
+      enable: () => void;
+      disable: () => void;
+      onClick: (callback: () => void) => void;
+      offClick: (callback: () => void) => void;
+      showProgress: (leaveActive: boolean) => void;
+      hideProgress: () => void;
+  };
+
+  HapticFeedback: {
+      impactOccurred: (style: 'light' | 'medium' | 'heavy' | 'rigid' | 'soft') => void;
+      notificationOccurred: (type: 'error' | 'success' | 'warning') => void;
+      selectionChanged: () => void;
   };
 }
 

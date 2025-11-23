@@ -1,5 +1,6 @@
 
-import React, { useState, useEffect } from 'react';
+
+import React, { useState, useEffect, useCallback } from 'react';
 import { Game } from './components/Game';
 import { Menu } from './components/Menu';
 import { GameState, Difficulty, GameStats, Achievement, Theme } from './types';
@@ -70,6 +71,31 @@ const App: React.FC = () => {
     }));
     setAchievements(hydratedAchievements);
   }, []);
+
+  // Handle Telegram Back Button
+  useEffect(() => {
+      const tg = window.Telegram?.WebApp;
+      if (!tg) return;
+
+      const handleBack = () => {
+          if (gameState === GameState.PLAYING) {
+              setGameState(GameState.MENU);
+          } else if (gameState === GameState.GAME_OVER) {
+              setGameState(GameState.MENU);
+          }
+      };
+
+      if (gameState !== GameState.MENU) {
+          tg.BackButton.show();
+          tg.BackButton.onClick(handleBack);
+      } else {
+          tg.BackButton.hide();
+      }
+
+      return () => {
+          tg.BackButton.offClick(handleBack);
+      };
+  }, [gameState]);
 
   // 2. Auto-Save Settings when they change (Only after initial load)
   useEffect(() => {
@@ -163,6 +189,19 @@ const App: React.FC = () => {
     setGameState(GameState.GAME_OVER);
   };
 
+  const handleSendScoreToTelegram = useCallback(() => {
+    const tg = window.Telegram?.WebApp;
+    if (tg) {
+        // Prepare payload for bot
+        const data = JSON.stringify({
+            score: score,
+            difficulty: difficulty,
+            highScore: stats.highScore
+        });
+        tg.sendData(data);
+    }
+  }, [score, difficulty, stats.highScore]);
+
   const startGame = () => {
     initAudio();
     playSound('ui', isMuted);
@@ -253,6 +292,7 @@ const App: React.FC = () => {
           stats={stats}
           theme={theme}
           isMuted={isMuted}
+          onSendScore={handleSendScoreToTelegram}
         />
       )}
     </div>
