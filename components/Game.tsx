@@ -27,6 +27,7 @@ export const Game: React.FC<GameProps> = ({ onGameOver, isMuted, difficulty, ini
   // Initialize spawn timer so first target spawns immediately
   const spawnTimerRef = useRef<number>(GAME_CONFIG.SPAWN_INTERVAL_START * diffSettings.spawnIntervalMultiplier + 100);
   const lastShotTimeRef = useRef<number>(0);
+  const lastScrollTimeRef = useRef<number>(0);
 
   // Use a ref for dimensions to access them in the loop without dependency issues
   const dimensionsRef = useRef<GameDimensions>({ width: 0, height: 0 });
@@ -133,7 +134,7 @@ export const Game: React.FC<GameProps> = ({ onGameOver, isMuted, difficulty, ini
     return () => resizeObserver.disconnect();
   }, []);
 
-  const handleColorSelect = (color: ColorType) => {
+  const handleColorSelect = useCallback((color: ColorType) => {
     setSelectedColor(color);
     gameStateRef.current.currentColor = color;
     playSound('rotate', isMuted);
@@ -153,7 +154,29 @@ export const Game: React.FC<GameProps> = ({ onGameOver, isMuted, difficulty, ini
             health: 1
         });
     }
-  };
+  }, [isMuted, tutorialStep]);
+
+  // Handle Mouse Scroll for Color Switching
+  useEffect(() => {
+    const handleWheel = (e: WheelEvent) => {
+        const now = Date.now();
+        if (now - lastScrollTimeRef.current < 50) return; // Throttle
+        lastScrollTimeRef.current = now;
+
+        const currentIndex = COLOR_KEYS.indexOf(selectedColor);
+        // Standard: scroll down (positive deltaY) -> next item.
+        const direction = e.deltaY > 0 ? 1 : -1;
+        
+        let nextIndex = currentIndex + direction;
+        if (nextIndex >= COLOR_KEYS.length) nextIndex = 0;
+        if (nextIndex < 0) nextIndex = COLOR_KEYS.length - 1;
+        
+        handleColorSelect(COLOR_KEYS[nextIndex]);
+    };
+
+    window.addEventListener('wheel', handleWheel);
+    return () => window.removeEventListener('wheel', handleWheel);
+  }, [selectedColor, handleColorSelect]);
 
   // Optimized Particle Spawner using Ring Buffer (O(1))
   const spawnParticle = useCallback((config: Partial<Particle>) => {
