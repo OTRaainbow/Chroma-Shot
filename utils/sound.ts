@@ -1,4 +1,5 @@
 
+
 /// <reference lib="dom" />
 
 
@@ -199,7 +200,8 @@ export const playSound = (type: 'score' | 'gameover' | 'rotate' | 'heavy' | 'pop
   // Telegram Haptic Feedback Integration
   const tg = window.Telegram?.WebApp;
   
-  if (tg && tg.HapticFeedback) {
+  // HapticFeedback was introduced in version 6.1
+  if (tg && tg.HapticFeedback && tg.isVersionAtLeast && tg.isVersionAtLeast('6.1')) {
       switch (type) {
           case 'ui':
           case 'rotate':

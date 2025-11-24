@@ -174,7 +174,8 @@ export const Game: React.FC<GameProps> = ({ onGameOver, isMuted, difficulty, ini
         handleColorSelect(COLOR_KEYS[nextIndex]);
     };
 
-    window.addEventListener('wheel', handleWheel);
+    // Passive true allows default scrolling, false would let us preventDefault but blocking scroll is aggressive.
+    window.addEventListener('wheel', handleWheel, { passive: true });
     return () => window.removeEventListener('wheel', handleWheel);
   }, [selectedColor, handleColorSelect]);
 
@@ -822,7 +823,7 @@ export const Game: React.FC<GameProps> = ({ onGameOver, isMuted, difficulty, ini
             const target = state.targets[i];
             const dx = proj.x - target.x;
             const dy = proj.y - target.y;
-            const dist = Math.sqrt(dx * dx + dy * dy);
+            const dist = Math.sqrt(dx * dx + dy * dy;
             
             if (dist < target.radius + 8) { // Slight hit tolerance
                 hit = true;

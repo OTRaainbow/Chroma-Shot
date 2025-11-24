@@ -146,6 +146,8 @@ export interface TelegramWebApp {
   viewportStableHeight: number;
   isExpanded: boolean;
   platform: string;
+  version: string;
+  isVersionAtLeast: (version: string) => boolean;
   
   BackButton: {
       isVisible: boolean;

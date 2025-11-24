@@ -77,6 +77,9 @@ const App: React.FC = () => {
       const tg = window.Telegram?.WebApp;
       if (!tg) return;
 
+      // Check support for BackButton (added in v6.1)
+      if (!tg.isVersionAtLeast || !tg.isVersionAtLeast('6.1')) return;
+
       const handleBack = () => {
           if (gameState === GameState.PLAYING) {
               setGameState(GameState.MENU);
