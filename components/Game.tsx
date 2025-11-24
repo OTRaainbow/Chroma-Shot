@@ -1,3 +1,4 @@
+
 /// <reference lib="dom" />
 /// <reference lib="dom.iterable" />
 
@@ -823,7 +824,7 @@ export const Game: React.FC<GameProps> = ({ onGameOver, isMuted, difficulty, ini
             const target = state.targets[i];
             const dx = proj.x - target.x;
             const dy = proj.y - target.y;
-            const dist = Math.sqrt(dx * dx + dy * dy;
+            const dist = Math.sqrt(dx * dx + dy * dy);
             
             if (dist < target.radius + 8) { // Slight hit tolerance
                 hit = true;
