@@ -987,7 +987,7 @@ export const Game: React.FC<GameProps> = ({ onGameOver, isMuted, difficulty, ini
   const textColor = theme === 'dark' ? 'text-white/90' : 'text-slate-800';
 
   return (
-    <div ref={containerRef} className={`relative w-full h-full overflow-hidden cursor-crosshair ${shake ? 'shake' : ''}`}>
+    <div ref={containerRef} className={`relative w-full h-full overflow-hidden cursor-crosshair touch-action-none ${shake ? 'shake' : ''}`}>
       
       {tutorialStep > 0 && (
         <div className="absolute inset-0 z-[55] bg-black/60 backdrop-blur-sm flex flex-col">
