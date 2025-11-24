@@ -141,6 +141,8 @@ export interface TelegramWebApp {
   expand: () => void;
   close: () => void;
   sendData: (data: string) => void;
+  setHeaderColor: (color: string) => void;
+  setBackgroundColor: (color: string) => void;
   colorScheme: 'light' | 'dark';
   viewportHeight: number;
   viewportStableHeight: number;

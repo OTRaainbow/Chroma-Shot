@@ -28,6 +28,15 @@ const App: React.FC = () => {
   const [achievements, setAchievements] = useState<Achievement[]>([]);
   const [toast, setToast] = useState<{title: string, icon: string} | null>(null);
 
+  const applyTelegramTheme = (currentTheme: Theme) => {
+    const tg = window.Telegram?.WebApp;
+    if (tg && tg.isVersionAtLeast && tg.isVersionAtLeast('6.1')) {
+        const headerColor = currentTheme === 'dark' ? '#0f172a' : '#f8fafc'; // Matches slate-900 / slate-50
+        tg.setHeaderColor(headerColor);
+        tg.setBackgroundColor(headerColor);
+    }
+  };
+
   // 1. Load Data on Mount & Initialize Telegram
   useEffect(() => {
     // Check for Telegram Environment
@@ -39,6 +48,10 @@ const App: React.FC = () => {
       // Auto-sync theme with Telegram settings
       if (tg.colorScheme) {
           setTheme(tg.colorScheme);
+          applyTelegramTheme(tg.colorScheme);
+      } else {
+          // Default to dark if no scheme detected
+          applyTelegramTheme('dark');
       }
     }
 
@@ -125,7 +138,9 @@ const App: React.FC = () => {
   const toggleTheme = () => {
       initAudio();
       playSound('ui', isMuted);
-      setTheme(prev => prev === 'dark' ? 'light' : 'dark');
+      const newTheme = theme === 'dark' ? 'light' : 'dark';
+      setTheme(newTheme);
+      applyTelegramTheme(newTheme);
   };
 
   const toggleMute = () => {
