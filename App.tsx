@@ -1,5 +1,3 @@
-
-
 import React, { useState, useEffect, useCallback } from 'react';
 import { Game } from './components/Game';
 import { Menu } from './components/Menu';
@@ -207,19 +205,6 @@ const App: React.FC = () => {
     setGameState(GameState.GAME_OVER);
   };
 
-  const handleSendScoreToTelegram = useCallback(() => {
-    const tg = window.Telegram?.WebApp;
-    if (tg) {
-        // Prepare payload for bot
-        const data = JSON.stringify({
-            score: score,
-            difficulty: difficulty,
-            highScore: stats.highScore
-        });
-        tg.sendData(data);
-    }
-  }, [score, difficulty, stats.highScore]);
-
   const startGame = () => {
     initAudio();
     playSound('ui', isMuted);
@@ -310,7 +295,6 @@ const App: React.FC = () => {
           stats={stats}
           theme={theme}
           isMuted={isMuted}
-          onSendScore={handleSendScoreToTelegram}
         />
       )}
     </div>
